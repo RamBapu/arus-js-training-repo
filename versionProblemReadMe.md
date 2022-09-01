@@ -1,6 +1,8 @@
 Input:
+
 Created a list of recent released versions for OnePlus Nord.
 Input values contain version,releaseDate,features,bugs,authors and type.
+
 Created a list of bugs in the release versions with bugId and description.
 Created a relation between versions and bugs with bugId.
 
