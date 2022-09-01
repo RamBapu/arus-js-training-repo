@@ -30,6 +30,7 @@ interface Bugs{
 }
 
 //Android Version Releases for OnePlus Nord
+
 const andriodReleases:AndriodReleases  =
 {
     name:'OnePlus Nord',
