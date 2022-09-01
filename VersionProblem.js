@@ -1,36 +1,5 @@
-//Interface for Android Releases
-interface AndriodReleases{
-    name:string,
-    releasedOn:Date,
-    versions:Versions[]
-}
-
-//Interface for Versions in Android Releases
-interface Versions{
-    version:string,
-    releaseDate:Date,
-    features:string[],
-    bugs:string[],
-    authors:string[],
-    type:ReleaseType
-}
-
-//Enum for Version type - MAJOR,PATCH,ENHANCEMENT
-enum ReleaseType{
-    major,
-    patch,
-    enhancement
-}
-
-//Interface for Bugs in Versions
-interface Bugs{
-    bugNumber:number,
-    bugId:string,
-    description:string
-}
-
 //Android Version Releases for OnePlus Nord
-const andriodReleases:AndriodReleases  =
+const andriodReleases =
 {
     name:'OnePlus Nord',
     releasedOn:new Date('July 21 2020'),
@@ -41,61 +10,61 @@ const andriodReleases:AndriodReleases  =
         features:['Improved system stability','Updated Android Security Patch to 2022.04'],
         bugs:['BGSG01','BGBA02','BGOK03'],
         authors:['A','B','C','F'],
-        type:ReleaseType.enhancement
+        type:'enhancement'
     },{
         version: 'AC2001_11.F.11 beta​',
         releaseDate:new Date('May 12 2022'),
         features:['Updated Android Security Patch'],
         bugs:['BGSG01','BGBA02','BGOK03'],
         authors:['B','C'],
-        type:ReleaseType.patch
+        type:'patch'
     },{
         version: 'AC2001_11.F.10​',
         releaseDate:new Date('2022 Apr 24'),
         features:['Dark mode','Shelf','Work Life Balance','Gallery Update','Canvas AOD'],
         bugs:['BGQC07'],
         authors:['A','C','D','E','F'],
-        type:ReleaseType.major
+        type:'major' 
     },{
         version: '11.1.10.10',
         releaseDate:new Date('2022-03-26'),
         features:['Improved system stability','Updated Android Security Patch'],
         bugs:['BGGG10'],
         authors:['F','G'],
-        type:ReleaseType.patch
+        type:'patch'
     },{
         version: '11.1.9.9',
         releaseDate:new Date('February 25, 2022'),
         features:['Fixed Freezing issue when sharing pictures in Gallery'],
         bugs:['BGCP08'],
         authors:['F','G','H'],
-        type:ReleaseType.enhancement
+        type:'enhancement'
     },{
         version: '11.1.8.8',
         releaseDate:new Date('January 28, 2022'),
         features:['Improve system stability','Updated Android security patch'],
         bugs:['BGGL04'],
         authors:['G','H'],
-        type:ReleaseType.patch
+        type:'patch'
     },{
         version: '11.1.7.7',
         releaseDate:new Date('December 17, 2021'),
         features:['Fixed the low probability call forwarding failure issue',''],
         bugs:['BGTH06'],
         authors:['H','I','J'],
-        type:ReleaseType.patch
+        type:'patch'
     },{
         version: '11.1.6.6',
         releaseDate:new Date('October 22, 2021'),
         features:['OnePlus Store'],
         bugs:['BGCF09','BGSG05'],
         authors:['J','K'],
-        type:ReleaseType.patch
+        type:'patch'
     }]
 }
 
 //Bugs Found in Android Releases 
-const bugs:Bugs[] =
+const bugs =
 [{
     bugNumber:1,
     bugId:'BGTS01',
@@ -174,8 +143,8 @@ function findTheReleaseWithBugId(){
 
 //Find the Author who worked in Maximum releases
 function findTheAuthorWorkedInManyReleases(){
-    let authorList:any = []
-    let uniqueAuthors:any[] = []
+    let authorList = []
+    let uniqueAuthors = []
 
     //Find the unique Authors 
     versions.forEach(version => {
@@ -205,7 +174,7 @@ function findTheAuthorWorkedInManyReleases(){
     //Finding the maximum number of releases by an author
     let maxRelease = -1
     let maxRelasesByAuthor = ''
-    authorList.forEach((author: { releases: number; authorName: string }) => {
+    authorList.forEach(author => {
         if(author.releases>maxRelease){
             maxRelease = author.releases
             maxRelasesByAuthor = author.authorName
@@ -218,7 +187,7 @@ function findTheAuthorWorkedInManyReleases(){
 //Finding all major releases
 function findAllReleasesInMajor(){
     versions.forEach(version => {
-        if(version.type === ReleaseType.major){
+        if(version.type === 'major'){
             console.log('\nMajor release version is '+version.version +' released on '+version.releaseDate.toString().substring(4,15));
         }
     });
