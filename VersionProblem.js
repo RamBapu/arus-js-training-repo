@@ -1,4 +1,5 @@
 //Android Version Releases for OnePlus Nord
+
 const andriodReleases =
 {
     name:'OnePlus Nord',
