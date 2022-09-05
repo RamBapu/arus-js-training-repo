@@ -25,7 +25,7 @@ interface Match{
 }
 
 //Tennis Grand Slam Tournament for Men
-const tennisGrandSlamTournament = {
+const tennisGrandSlamTournament:TennisGrandSlamTournament = {
     name: "Men's Single Wimbledon 2022 Tournament",
     players:[
         {name:'Novak Djokovic',rank:1},
