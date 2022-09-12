@@ -114,7 +114,7 @@ findAllReleasesMadeInYear(year)
 findTheReleaseWithBugId('BGOK03')
 findTheAuthorWorkedInManyReleases()
 findAllReleasesInMajor('major')
-findAllVersionsByFeatureName()
+findAllVersionsByFeatureName('system')
 
 //Find how many releases made in a single year
 function findAllReleasesMadeInYear(year){
@@ -173,8 +173,7 @@ function findAllReleasesInMajor(versionType){
 }
 
 //Finding all versions having the feature name 'system'
-function findAllVersionsByFeatureName(){
-    const featureName = 'system'
+function findAllVersionsByFeatureName(featureName){
     console.log('\nVersions with feature name: '+featureName)
     versions.forEach(version => {
         for(let feature of version.features){
