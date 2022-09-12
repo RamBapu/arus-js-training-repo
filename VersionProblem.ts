@@ -1,37 +1,37 @@
 //Interface for Android Releases
-interface AndriodReleases{
+interface IAndriodReleases{
     name:string,
     releasedOn:Date,
-    versions:Versions[]
+    versions:IVersions[]
 }
 
 //Interface for Versions in Android Releases
-interface Versions{
+interface IVersions{
     version:string,
     releaseDate:Date,
     features:string[],
     bugs:string[],
     authors:string[],
-    type:ReleaseType
+    type:EReleaseType
 }
 
 //Enum for Version type - MAJOR,PATCH,ENHANCEMENT
-enum ReleaseType{
+enum EReleaseType{
     major,
     patch,
     enhancement
 }
 
 //Interface for Bugs in Versions
-interface Bugs{
+interface IBugs{
     bugNumber:number,
     bugId:string,
     description:string
 }
 
-//Android Version Releases for OnePlus Nord
 
-const andriodReleases:AndriodReleases  =
+//Android Version Releases for OnePlus Nord
+const andriodReleases:IAndriodReleases =
 {
     name:'OnePlus Nord',
     releasedOn:new Date('July 21 2020'),
@@ -42,61 +42,61 @@ const andriodReleases:AndriodReleases  =
         features:['Improved system stability','Updated Android Security Patch to 2022.04'],
         bugs:['BGSG01','BGBA02','BGOK03'],
         authors:['A','B','C','F'],
-        type:ReleaseType.enhancement
+        type:EReleaseType.enhancement
     },{
         version: 'AC2001_11.F.11 beta​',
         releaseDate:new Date('May 12 2022'),
         features:['Updated Android Security Patch'],
         bugs:['BGSG01','BGBA02','BGOK03'],
         authors:['B','C'],
-        type:ReleaseType.patch
+        type:EReleaseType.patch
     },{
         version: 'AC2001_11.F.10​',
         releaseDate:new Date('2022 Apr 24'),
         features:['Dark mode','Shelf','Work Life Balance','Gallery Update','Canvas AOD'],
         bugs:['BGQC07'],
         authors:['A','C','D','E','F'],
-        type:ReleaseType.major
+        type:EReleaseType.major
     },{
         version: '11.1.10.10',
         releaseDate:new Date('2022-03-26'),
         features:['Improved system stability','Updated Android Security Patch'],
         bugs:['BGGG10'],
         authors:['F','G'],
-        type:ReleaseType.patch
+        type:EReleaseType.patch
     },{
         version: '11.1.9.9',
         releaseDate:new Date('February 25, 2022'),
         features:['Fixed Freezing issue when sharing pictures in Gallery'],
         bugs:['BGCP08'],
         authors:['F','G','H'],
-        type:ReleaseType.enhancement
+        type:EReleaseType.enhancement
     },{
         version: '11.1.8.8',
         releaseDate:new Date('January 28, 2022'),
         features:['Improve system stability','Updated Android security patch'],
         bugs:['BGGL04'],
         authors:['G','H'],
-        type:ReleaseType.patch
+        type:EReleaseType.patch
     },{
         version: '11.1.7.7',
         releaseDate:new Date('December 17, 2021'),
         features:['Fixed the low probability call forwarding failure issue',''],
         bugs:['BGTH06'],
         authors:['H','I','J'],
-        type:ReleaseType.patch
+        type:EReleaseType.patch
     },{
         version: '11.1.6.6',
         releaseDate:new Date('October 22, 2021'),
         features:['OnePlus Store'],
         bugs:['BGCF09','BGSG05'],
         authors:['J','K'],
-        type:ReleaseType.patch
+        type:EReleaseType.patch
     }]
 }
 
 //Bugs Found in Android Releases 
-const bugs:Bugs[] =
+const bugs:IBugs[] =
 [{
     bugNumber:1,
     bugId:'BGTS01',
@@ -140,15 +140,15 @@ const bugs:Bugs[] =
 }]
 
 const versions = andriodReleases.versions
-findAllReleasesMadeInYear()
-findTheReleaseWithBugId()
+let year =  new Date('2022-08-20').getFullYear()
+findAllReleasesMadeInYear(year)
+findTheReleaseWithBugId('BGOK03')
 findTheAuthorWorkedInManyReleases()
-findAllReleasesInMajor()
+findAllReleasesInMajor(EReleaseType.major)
 findAllVersionsByFeatureName()
 
 //Find how many releases made in a single year
-function findAllReleasesMadeInYear(){
-    let year =  new Date('2022-08-20').getFullYear()
+function findAllReleasesMadeInYear(year:number){
     let release = 0
     versions.forEach(version => {
         if(version.releaseDate.getFullYear() === year)
@@ -158,12 +158,11 @@ function findAllReleasesMadeInYear(){
 }
 
 //Find all the releases with the bugId 'BGOK03'
-function findTheReleaseWithBugId(){
-    let bugId = 'BGOK03'
+function findTheReleaseWithBugId(bugId:string){
     versions.forEach(version => {
         version.bugs.forEach(versionBug =>{
             if(versionBug === bugId){
-                bugs.forEach((bug)=>{
+                bugs.forEach((bug:IBugs)=>{
                     if(bug.bugId === bugId){
                         console.log('Release with bugId '+bugId +' (description: ' +bug.description +'): '+version.version)
                     }
@@ -175,52 +174,31 @@ function findTheReleaseWithBugId(){
 
 //Find the Author who worked in Maximum releases
 function findTheAuthorWorkedInManyReleases(){
-    let authorList:any = []
-    let uniqueAuthors:any[] = []
+    const authorVersionMap:Map<string,number> = new Map()
+    versions.forEach(version =>{
+        version.authors.forEach(author =>{
+            let noOfReleases = authorVersionMap.get(author) ?? 0
+            authorVersionMap.set(author,noOfReleases+=1)
+        })
+    })
 
-    //Find the unique Authors 
-    versions.forEach(version => {
-        version.authors.forEach(author => {
-            authorList.push(author)   
-        });
-        uniqueAuthors = [...new Set(authorList)]
-    });
-
-    //Created an author object containing authorName and number of releases
-    authorList = []
-    uniqueAuthors.forEach(uniqueAuthor => {
-        let release = 1
-        versions.forEach(version =>{
-            version.authors.forEach(auth => {
-                if(uniqueAuthor === auth){
-                    const author  = {
-                        authorName:uniqueAuthor,
-                        releases:release++
-                    }
-                    authorList.push(author)
-                }
-            });
-        }) 
-    });
-    
-    //Finding the maximum number of releases by an author
-    let maxRelease = -1
-    let maxRelasesByAuthor = ''
-    authorList.forEach((author: { releases: number; authorName: string }) => {
-        if(author.releases>maxRelease){
-            maxRelease = author.releases
-            maxRelasesByAuthor = author.authorName
+    let authorWorkedInMostReleases = {
+        author:'',
+        versionWorked:0
+    }
+    authorVersionMap.forEach((versionWorked,author) =>{
+        if(authorWorkedInMostReleases.versionWorked < versionWorked){
+            authorWorkedInMostReleases ={ author,versionWorked}
         }
-    });
-
-    console.log('\nAuthor worked in many releases: '+maxRelasesByAuthor);
+    })
+    console.log('Author worked in most releases: '+authorWorkedInMostReleases.author)
 }
 
 //Finding all major releases
-function findAllReleasesInMajor(){
+function findAllReleasesInMajor(versionType: EReleaseType){
     versions.forEach(version => {
-        if(version.type === ReleaseType.major){
-            console.log('\nMajor release version is '+version.version +' released on '+version.releaseDate.toString().substring(4,15));
+        if(version.type === versionType){
+            console.log('\n'+EReleaseType[versionType] + ' release version is '+version.version +' released on '+version.releaseDate.toString().substring(4,15));
         }
     });
 }

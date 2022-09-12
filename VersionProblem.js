@@ -109,15 +109,15 @@ const bugs =
 }]
 
 const versions = andriodReleases.versions
-findAllReleasesMadeInYear()
-findTheReleaseWithBugId()
+let year =  new Date('2022-08-20').getFullYear()
+findAllReleasesMadeInYear(year)
+findTheReleaseWithBugId('BGOK03')
 findTheAuthorWorkedInManyReleases()
-findAllReleasesInMajor()
+findAllReleasesInMajor('major')
 findAllVersionsByFeatureName()
 
 //Find how many releases made in a single year
-function findAllReleasesMadeInYear(){
-    let year =  new Date('2022-08-20').getFullYear()
+function findAllReleasesMadeInYear(year){
     let release = 0
     versions.forEach(version => {
         if(version.releaseDate.getFullYear() === year)
@@ -127,8 +127,7 @@ function findAllReleasesMadeInYear(){
 }
 
 //Find all the releases with the bugId 'BGOK03'
-function findTheReleaseWithBugId(){
-    let bugId = 'BGOK03'
+function findTheReleaseWithBugId(bugId){
     versions.forEach(version => {
         version.bugs.forEach(versionBug =>{
             if(versionBug === bugId){
@@ -144,52 +143,31 @@ function findTheReleaseWithBugId(){
 
 //Find the Author who worked in Maximum releases
 function findTheAuthorWorkedInManyReleases(){
-    let authorList = []
-    let uniqueAuthors = []
+    const authorVersionMap = new Map()
+    versions.forEach(version =>{
+        version.authors.forEach(author =>{
+            let noOfReleases = authorVersionMap.get(author) ?? 0
+            authorVersionMap.set(author,noOfReleases+=1)
+        })
+    })
 
-    //Find the unique Authors 
-    versions.forEach(version => {
-        version.authors.forEach(author => {
-            authorList.push(author)   
-        });
-        uniqueAuthors = [...new Set(authorList)]
-    });
-
-    //Created an author object containing authorName and number of releases
-    authorList = []
-    uniqueAuthors.forEach(uniqueAuthor => {
-        let release = 1
-        versions.forEach(version =>{
-            version.authors.forEach(auth => {
-                if(uniqueAuthor === auth){
-                    const author  = {
-                        authorName:uniqueAuthor,
-                        releases:release++
-                    }
-                    authorList.push(author)
-                }
-            });
-        }) 
-    });
-    
-    //Finding the maximum number of releases by an author
-    let maxRelease = -1
-    let maxRelasesByAuthor = ''
-    authorList.forEach(author => {
-        if(author.releases>maxRelease){
-            maxRelease = author.releases
-            maxRelasesByAuthor = author.authorName
+    let authorWorkedInMostReleases = {
+        author:'',
+        versionWorked:0
+    }
+    authorVersionMap.forEach((versionWorked,author) =>{
+        if(authorWorkedInMostReleases.versionWorked < versionWorked){
+            authorWorkedInMostReleases ={ author,versionWorked}
         }
-    });
-
-    console.log('\nAuthor worked in many releases: '+maxRelasesByAuthor);
+    })
+    console.log('Author worked in most releases: '+authorWorkedInMostReleases.author)
 }
 
 //Finding all major releases
-function findAllReleasesInMajor(){
+function findAllReleasesInMajor(versionType){
     versions.forEach(version => {
-        if(version.type === 'major'){
-            console.log('\nMajor release version is '+version.version +' released on '+version.releaseDate.toString().substring(4,15));
+        if(version.type === versionType){
+            console.log('\n'+versionType.toUpperCase() + ' release version is '+version.version +' released on '+version.releaseDate.toString().substring(4,15));
         }
     });
 }
