@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heads You Win!</title>
+</head>
+<body>
+    <script>
+        const outcomes = ['heads','tails']
+        const playerOne = 'Computer'
+        const playerTwo = 'Player'
+        const totalRounds = 4
+        const tossesInEachRound = 10
+
+        const result = [{
+            player:playerOne,
+            numberOfHeadsInRound:0,
+            totalNumberOfHeads:0
+        },{
+            player:playerTwo,
+            numberOfHeadsInRound:0,
+            totalNumberOfHeads:0
+        }]
+
+        const tossCSV = [{
+            player:playerOne,
+            roundNumber:[],
+            tossResults:[]
+        },{
+            player:playerTwo,
+            roundNumber:[],
+            tossResults:[]
+        }]
+
+
+        let round = 1
+        let countOfOutcomes = 1
+
+
+        function startTossing(){
+            console.log('---------------------------------------- Round: '+ round+' ---------------------------------');
+            const roundIntervalId = setInterval(() =>{
+                generateTenSecRounds(playerOne,playerTwo)
+                if(countOfOutcomes++ == (tossesInEachRound*round)){
+                    clearInterval(roundIntervalId);
+                    showResult()
+                }    
+            },1000)
+        }
+
+
+        function generateTenSecRounds(playerOne,playerTwo){
+            console.log(`----------------- Toss : ${countOfOutcomes} ----------------`);
+            if(headsOrTailsByRandom(playerOne) === 'heads'){
+                result.filter(match => match.player === playerOne)
+                .map(match => match.numberOfHeadsInRound+=1)
+                result.filter(match => match.player === playerOne)
+                .map(match => match.totalNumberOfHeads+=1)
+            }
+            if(headsOrTailsByRandom(playerTwo) === 'heads'){
+                result.filter(match => match.player === playerTwo)
+                .map(match => match.numberOfHeadsInRound+=1)
+                result.filter(match => match.player === playerTwo)
+                .map(match => match.totalNumberOfHeads+=1)
+            }
+        }
+
+        function headsOrTailsByRandom(player){
+            let headsOrTails = outcomes[Math.floor(outcomes.length*Math.random())]
+            tossCSV.filter(match => match.player === playerOne && playerOne === player)
+                    .map(match => match.tossResults.push(headsOrTails))
+            tossCSV.filter(match => match.player === playerTwo && playerTwo === player)
+                    .map(match => match.tossResults.push(headsOrTails))
+            console.log(player+"'s Toss outcome is "+headsOrTails);
+            return headsOrTails
+        }
+
+        function showResult(){
+            console.table(result)
+            round++
+            tossCSV.map(match => match.roundNumber.push(round-1))
+            if(round <= totalRounds){
+                setTimeout(()=>{
+                    startTossing()
+                    result.map(match => match.numberOfHeadsInRound=0 )
+                },5000)
+            }else{
+                let winner = {
+                    player:'',
+                    numberOfHeadsInAllRounds:0
+                }
+                result.forEach(match =>{
+                    if(match.totalNumberOfHeads > winner.numberOfHeadsInAllRounds)
+                    {
+                        winner.player = match.player
+                        winner.numberOfHeadsInAllRounds = match.totalNumberOfHeads
+                    }
+                })
+                setTimeout(()=>{console.log(winner.player + ' is the winner');},5000)
+                creatingTossResultsCSVFile()  
+            }   
+        }
+
+        function creatingTossResultsCSVFile(){
+            tossResults = ''
+            for(tossIndex of tossCSV){
+                tossResults += tossIndex.player 
+                tossResults += '\r\n'
+                let toss = 0
+                for(let round = 1;round <= totalRounds;round++) {
+                    tossResults += 'Round : '+tossIndex.roundNumber[round-1]
+                    tossResults += '\r\n'
+                    for(;toss < (tossesInEachRound*round);toss++){
+                        tossResults += tossIndex.tossResults[toss]+','
+                    }
+                    tossResults += '\r\n'
+                }
+            }
+            let tempBlob = new Blob([tossResults],{type:'text\csv'})
+            let tempURL = window.URL.createObjectURL(tempBlob)
+            let activation = document.createElement('a')
+            activation.href = tempURL
+            activation.download = 'TossResults.csv'
+            activation.click()
+            window.URL.revokeObjectURL(tempURL)
+            activation.remove()
+        }
+
+
+        startTossing()
+    </script>
+</body>
+</html>
